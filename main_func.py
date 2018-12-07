@@ -183,7 +183,6 @@ print("main")
 for i in range(steps):
     print("main {} steps...".format(i), end=' ')
     cv2.namedWindow('result', cv2.WINDOW_NORMAL)
-    cv2.imshow("result", ((nx+1)*255/2).astype("uint8"))
     Hz = Hz * Hi_mask[:,:,i] + relative_amplitude*amplitude*Hi[:,:,i]
     update_Ex()
     print("updated Ex", end=' ')
