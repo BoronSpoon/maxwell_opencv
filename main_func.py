@@ -128,6 +128,8 @@ else:
     nx_left_cond = -(_right_conductor - conductor).copy()
     ny_up_cond = -(conductor - _down_conductor).copy()
     ny_down_cond = -(_up_conductor - conductor).copy()
+    nx = nx_right_cond + nx_left_cond
+    ny = ny_up_cond + ny_down_cond
     for i in range(steps):
         print("initial condition {} steps".format(i))
         # compute V
@@ -147,6 +149,7 @@ else:
     np.save("ny",ny)
     np.save("Hi",Hi)
     np.save("Hi_mask",Hi_mask)
+
 
 #variables
 non_conductor = 1-conductor
@@ -182,12 +185,14 @@ for i in range(steps):
     cv2.namedWindow('result', cv2.WINDOW_NORMAL)
     cv2.imshow("result", ((nx+1)*255/2).astype("uint8"))
     Hz = Hz * Hi_mask[:,:,i] + relative_amplitude*Hi[:,:,i]
-    update_Hz()
-    print("updated Hz", end=' ')
     update_Ex()
     print("updated Ex", end=' ')
+    Ex = Ex * (1-np.abs(ny))
     update_Ey()
     print("updated Ey", end=' ')
+    Ey = Ey * (1-np.abs(nx))
+    update_Hz()
+    print("updated Hz", end=' ')
     cv2.imshow("result", (Hz + 255/2).astype("uint8"))
     if cv2.waitKey(10) == ord("q"):
         exit()
