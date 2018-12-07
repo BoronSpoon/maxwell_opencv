@@ -10,7 +10,7 @@ print("constant")
 height = 99
 width = 99
 amplitude = 100
-relative_amplitude = 48.2*10**5
+relative_amplitude = 100
 lhaplus_steps = 100
 steps = 1000
 pi = 3.14159265358979
@@ -139,7 +139,7 @@ else:
         ix[:,:,i] = sigma*delta_d*((V[:,:,i]-left(V[:,:,i]))*_left_conductor*conductor + (right(V[:,:,i])-V[:,:,i])*_right_conductor*conductor)*_lr_conductor
         iy[:,:,i] = sigma*delta_d*((V[:,:,i]-down(V[:,:,i]))*_down_conductor*conductor + (up(V[:,:,i])-V[:,:,i])*_up_conductor*conductor)*_du_conductor
         #compute Hi
-        Hi[:,:,i] = (down(ix[:,:,i])/ny_down_cond + up(ix[:,:,i])/ny_up_cond - left(iy[:,:,i])/nx_left_cond - right(iy[:,:,i])/nx_right_cond)*(1-conductor).astype("float64")
+        Hi[:,:,i] = (down(ix[:,:,i])*ny_down_cond + up(ix[:,:,i])*ny_up_cond - left(iy[:,:,i])*nx_left_cond - right(iy[:,:,i])*nx_right_cond)*(1-conductor).astype("float64")
         Hi_mask[:,:,i] = np.where(Hi[:,:,i] != 0,0,1)
 
     np.save("conductor",conductor)
@@ -184,7 +184,8 @@ for i in range(steps):
     print("main {} steps...".format(i), end=' ')
     cv2.namedWindow('result', cv2.WINDOW_NORMAL)
     cv2.imshow("result", ((nx+1)*255/2).astype("uint8"))
-    Hz = Hz * Hi_mask[:,:,i] + relative_amplitude*Hi[:,:,i]
+    Hz = Hz * Hi_mask[:,:,i] + relative_amplitude*amplitude*Hi[:,:,i]
+    print(np.max(Hz),np.min(Hz))
     update_Ex()
     print("updated Ex", end=' ')
     Ex = Ex * (1-np.abs(ny))
