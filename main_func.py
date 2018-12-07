@@ -139,7 +139,7 @@ else:
         ix[:,:,i] = sigma*delta_d*((V[:,:,i]-left(V[:,:,i]))*_left_conductor*conductor + (right(V[:,:,i])-V[:,:,i])*_right_conductor*conductor)*_lr_conductor
         iy[:,:,i] = sigma*delta_d*((V[:,:,i]-down(V[:,:,i]))*_down_conductor*conductor + (up(V[:,:,i])-V[:,:,i])*_up_conductor*conductor)*_du_conductor
         #compute Hi
-        Hi[:,:,i] = (-down(ix[:,:,i]*ny_down_cond) - up(ix[:,:,i]*ny_up_cond) - left(iy[:,:,i]*nx_left_cond)- right(iy[:,:,i]*nx_right_cond))*(1-conductor).astype("float64")
+        Hi[:,:,i] = (down(ix[:,:,i])/ny_down_cond + up(ix[:,:,i])/ny_up_cond - left(iy[:,:,i])/nx_left_cond - right(iy[:,:,i])/nx_right_cond)*(1-conductor).astype("float64")
         Hi_mask[:,:,i] = np.where(Hi[:,:,i] != 0,0,1)
 
     np.save("conductor",conductor)
