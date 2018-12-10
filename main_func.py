@@ -10,7 +10,7 @@ print("constant")
 height = 99
 width = 99
 amplitude = 100
-relative_amplitude = 100
+relative_amplitude = 0.5*10**5
 lhaplus_steps = 100
 steps = 1000
 pi = 3.14159265358979
@@ -184,6 +184,7 @@ for i in range(steps):
     print("main {} steps...".format(i), end=' ')
     cv2.namedWindow('result', cv2.WINDOW_NORMAL)
     Hz = Hz * Hi_mask[:,:,i] + relative_amplitude*amplitude*Hi[:,:,i]
+    print(np.max(relative_amplitude*amplitude*Hi+255/2),np.min(relative_amplitude*amplitude*Hi+255/2))
     update_Ex()
     print("updated Ex", end=' ')
     Ex = Ex * (1-np.abs(ny))
@@ -192,6 +193,6 @@ for i in range(steps):
     Ey = Ey * (1-np.abs(nx))
     update_Hz()
     print("updated Hz", end=' ')
-    cv2.imshow("result", (Hz + 255/2).astype("uint8"))
+    cv2.imshow("result", (Hz+ 255/2).astype("uint8"))
     if cv2.waitKey(10) == ord("q"):
         exit()
