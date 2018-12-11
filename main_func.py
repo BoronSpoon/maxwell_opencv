@@ -121,7 +121,7 @@ else:
     _right_conductor = right(conductor)
     _down_conductor = down(conductor)
     _up_conductor = up(conductor)
-    _lr_conductor = (_left_conductor*_right_conductor*conductor*(-0.5)+1.0)
+    _lr_conductor = (_left_conductor*_right_conductor*conductor*(-0.5)+1.0) #if both l and r are conductors, then divide by 2
     _du_conductor = (_down_conductor*_up_conductor*conductor*(-0.5)+1.0)
     # compute n
     nx_right_cond = -(conductor - _left_conductor).copy()
@@ -136,8 +136,8 @@ else:
         for j in range(lhaplus_steps):
             lhaplus_update(i)
         #compute i
-        ix[:,:,i] = sigma*delta_d*((V[:,:,i]-left(V[:,:,i]))*_left_conductor*conductor + (right(V[:,:,i])-V[:,:,i])*_right_conductor*conductor)*_lr_conductor
-        iy[:,:,i] = sigma*delta_d*((V[:,:,i]-down(V[:,:,i]))*_down_conductor*conductor + (up(V[:,:,i])-V[:,:,i])*_up_conductor*conductor)*_du_conductor
+        ix[:,:,i] = 1/(sigma*delta_d)*((V[:,:,i]-left(V[:,:,i]))*_left_conductor*conductor + (right(V[:,:,i])-V[:,:,i])*_right_conductor*conductor)*_lr_conductor
+        iy[:,:,i] = 1/(sigma*delta_d)*((V[:,:,i]-down(V[:,:,i]))*_down_conductor*conductor + (up(V[:,:,i])-V[:,:,i])*_up_conductor*conductor)*_du_conductor
         #compute Hi
         Hi[:,:,i] = (up(ix[:,:,i])*ny_down_cond + down(ix[:,:,i])*ny_up_cond - right(iy[:,:,i])*nx_left_cond - left(iy[:,:,i])*nx_right_cond).astype("float64")
         Hi_mask[:,:,i] = np.where(Hi[:,:,i] != 0,0,1)
@@ -179,20 +179,23 @@ def update_Hz():
     Hzbef = var
 
 #main
+def tileconcat(tile_images):
+    return cv2.hconcat([cv2.vconcat(vert_images) for vert_images in tile_images])
 print("main")
 for i in range(steps):
     print("main {} steps...".format(i), end=' ')
-    cv2.namedWindow('result', cv2.WINDOW_NORMAL)
     Hz = Hz * Hi_mask[:,:,i] + relative_amplitude*amplitude*Hi[:,:,i]
-    print(np.max(relative_amplitude*amplitude*Hi+255/2),np.min(relative_amplitude*amplitude*Hi+255/2))
     update_Ex()
-    print("updated Ex", end=' ')
     Ex = Ex * (1-np.abs(ny))
+    print("updated Ex", end=' ')
     update_Ey()
-    print("updated Ey", end=' ')
     Ey = Ey * (1-np.abs(nx))
+    print("updated Ey", end=' ')
     update_Hz()
     print("updated Hz", end=' ')
-    cv2.imshow("result", (Hz+ 255/2).astype("uint8"))
+    tileconcat([
+        [(Hz+ 255/2).astype("uint8"), (relative_amplitude*amplitude*Hi[:,:,i]+ 255/2).astype("uint8")],
+        [(Hi_mask[:,:,i]*255).astype("uint8"), (Hi_mask[:,:,i]*255).astype("uint8")]
+    ])
     if cv2.waitKey(10) == ord("q"):
         exit()
