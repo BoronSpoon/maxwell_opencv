@@ -10,7 +10,7 @@ print("constant")
 height = 99
 width = 99
 amplitude = 100
-relative_amplitude = 0.5*10**5
+relative_amplitude = 10**6
 lhaplus_steps = 100
 steps = 1000
 pi = 3.14159265358979
