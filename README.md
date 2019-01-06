@@ -4,7 +4,7 @@ BUG: The magnetic wave disappears after the first wave has passed by
 
 ## snapshots
 Snapshot of the simulator in action.     
-The two lines in the middle are dipoles made of metal.   
+The two lines in the middle indicates dipoles made of metal.   
 ![snapshot.png](snapshot.png?raw=true)
 
 ## uses bitmap files to set the three parameters (conductivity, relative permittivity, relative permiability)   
