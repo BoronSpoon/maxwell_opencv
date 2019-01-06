@@ -200,6 +200,8 @@ for i in range(steps):
     print("updated Ey", end=' ')
     update_Hz()
     Hz = Hz * Hi_mask[:,:,i] + relative_amplitude*amplitude*Hi[:,:,i]
+    ###
+    """
     print("updated Hz", end=' ')
     tile_plot = tileconcat([
         [(Hz+ 255/2).astype("uint8"), ((Hi[:,:,i]-Himin)*255/(Himax-Himin)).astype("uint8"), (np.abs(nx)*255).astype("uint8")],
@@ -207,5 +209,11 @@ for i in range(steps):
         [(Hi_mask[:,:,i]*255).astype("uint8"), ((ix[:,:,i]-ixmin)*255/(ixmax-ixmin)).astype("uint8"), ((iy[:,:,i]-iymin)*255/(iymax-iymin)).astype("uint8")]
     ])
     cv2.imshow("result",tile_plot)
+    """
+    ###
+    plot = (Hz+ 255/2).astype("uint8")
+    cv2.imshow("result",plot)
+    if i == 60:
+        cv2.imwrite("snapshot.png",plot)
     if cv2.waitKey(10) == ord("q"):
         exit()
